@@ -13,12 +13,12 @@ import {
 } from "lucide-react";
 import ValTown from "@valtown/sdk";
 import { FileRetrieveResponse } from "@valtown/sdk/resources/vals";
-import { LoaderFunctionArgs } from "@remix-run/node";
- const client = new ValTown();
+import type { LoaderFunctionArgs } from "@remix-run/node";
 
 
 export async function loader({ params }: LoaderFunctionArgs) {
-// Get files
+  const client = new ValTown({bearerToken: import.meta.env.VAL_TOWN_API_KEY || Deno.env.get('VAL_TOWN_API_KEY')});
+  // Get files
   const {id:zon} = await client.me.vals.list({
     limit: 100,
     offset: 0

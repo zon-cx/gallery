@@ -1,6 +1,6 @@
 import '@valtown/sdk/shims/web';
 import { Outlet, useLoaderData } from '@remix-run/react';
-import { LoaderFunctionArgs } from '@remix-run/node';
+import type { LoaderFunctionArgs } from '@remix-run/node';
 import ValTown from '@valtown/sdk';
 
 export async function loader({ params }: LoaderFunctionArgs) {
@@ -8,8 +8,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
   if (!zon) {
     throw new Error("Missing zon parameter");
   }
-
-  const client = new ValTown();
+  const client = new ValTown({bearerToken: Deno.env.get('VAL_TOWN_API_KEY')});
   const zons = await client.me.vals.list({
     limit: 100,
     offset: 0,

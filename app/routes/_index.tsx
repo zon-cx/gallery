@@ -4,9 +4,19 @@ import { FolderKanban as ZonsIcon, Star, GitFork, Globe, User } from 'lucide-rea
 
 import ValTown from '@valtown/sdk';
 import { Val } from '@valtown/sdk/resources';
+import { MetaFunction } from '@netlify/remix-runtime';
+
+
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: "Zon" },
+    { name: "description", content: "Welcome to Zon" },
+  ];
+};
 
 export async function loader() {
-  const valtown = new ValTown();
+  const valtown = new ValTown({bearerToken: import.meta.env.VAL_TOWN_API_KEY || Deno.env.get('VAL_TOWN_API_KEY')});
   const vals = await valtown.me.vals.list({
     limit: 100,
     offset: 0

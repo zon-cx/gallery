@@ -1,5 +1,5 @@
 import '@valtown/sdk/shims/web'
-import { LoaderFunctionArgs, ActionFunctionArgs } from "@remix-run/node";
+import type { LoaderFunctionArgs, ActionFunctionArgs } from "@remix-run/node";
 import { useLoaderData, useNavigation, useSubmit, Await } from "@remix-run/react";
 import { Code2, Save } from "lucide-react";
 import { useCallback, useRef, useEffect, Suspense } from "react";
@@ -22,7 +22,6 @@ declare global {
   }
 }
 
-const client = new ValTown();
 
 
 
@@ -30,6 +29,7 @@ const client = new ValTown();
 
 export async function loader({ params }: LoaderFunctionArgs) {
   const { file: name } = params;
+  const client = new ValTown({bearerToken: import.meta.env.VAL_TOWN_API_KEY || Deno.env.get('VAL_TOWN_API_KEY')});
   const zon = await client.me.vals.list({
     limit: 100,
     offset: 0
@@ -57,9 +57,10 @@ export async function loader({ params }: LoaderFunctionArgs) {
 
 
 export async function action({ request,params }: ActionFunctionArgs) { 
+  const { file } = params; 
   const formData = await request.formData();
   const content = formData.get("content") as string;
-  const { file } = params; 
+  const client = new ValTown({bearerToken: import.meta.env.VAL_TOWN_API_KEY || Deno.env.get('VAL_TOWN_API_KEY')});
   const zon = await client.me.vals.list({
     limit: 100,
     offset: 0
