@@ -16,7 +16,7 @@ export const meta: MetaFunction = () => {
 };
 
 export async function loader() {
-  const valtown = new ValTown({bearerToken: import.meta.env.VAL_TOWN_API_KEY || Deno.env.get('VAL_TOWN_API_KEY')});
+  const valtown = new ValTown({bearerToken: `${import.meta.env.VAL_TOWN_API_KEY}`});
   const vals = await valtown.me.vals.list({
     limit: 100,
     offset: 0

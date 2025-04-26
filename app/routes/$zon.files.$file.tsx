@@ -2,7 +2,7 @@ import '@valtown/sdk/shims/web'
 import type { LoaderFunctionArgs, ActionFunctionArgs } from "@remix-run/node";
 import { useLoaderData, useNavigation, useSubmit, Await } from "@remix-run/react";
 import { Code2, Save } from "lucide-react";
-import { useCallback, useRef, useEffect, Suspense } from "react";
+import { useCallback, useRef, useEffect, Suspense, useLayoutEffect } from "react";
 import ValTown from "@valtown/sdk";
 import type { HTMLTypeScriptEditor } from "@cxai/ide";
    
@@ -29,7 +29,7 @@ declare global {
 
 export async function loader({ params }: LoaderFunctionArgs) {
   const { file: name } = params;
-  const client = new ValTown({bearerToken: import.meta.env.VAL_TOWN_API_KEY || Deno.env.get('VAL_TOWN_API_KEY')});
+  const client = new ValTown({bearerToken: `${import.meta.env.VAL_TOWN_API_KEY}`});
   const zon = await client.me.vals.list({
     limit: 100,
     offset: 0
@@ -60,7 +60,7 @@ export async function action({ request,params }: ActionFunctionArgs) {
   const { file } = params; 
   const formData = await request.formData();
   const content = formData.get("content") as string;
-  const client = new ValTown({bearerToken: import.meta.env.VAL_TOWN_API_KEY || Deno.env.get('VAL_TOWN_API_KEY')});
+  const client = new ValTown({bearerToken: `${import.meta.env.VAL_TOWN_API_KEY}`});
   const zon = await client.me.vals.list({
     limit: 100,
     offset: 0
@@ -133,19 +133,19 @@ export default function FileEditor() {
 
 export  function TSEditor({zon, file, content}: {zon: string, file: string, content: string}) {
   const editorRef = useRef<HTMLTypeScriptEditor>(null);
-
-  useEffect(() => {
+  // const yjsurl=`${import.meta.env.YJS_URL}`
+  useLayoutEffect(() => {
     if(editorRef.current && content){
       editorRef.current.value = content;
     }
   }, [content]);
+
 
   return <ts-editor
     ref={editorRef}
     component="codemirror"
     room={`val-${zon}-${file}`}
     className="h-full w-full"
-    url={import.meta.env.VITE_YJS_URL || "wss://yjs.cfapps.us10-001.hana.ondemand.com"}
   /> ;
 } 
 

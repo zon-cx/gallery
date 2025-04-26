@@ -8,7 +8,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
   if (!zon) {
     throw new Error("Missing zon parameter");
   }
-  const client = new ValTown({bearerToken: Deno.env.get('VAL_TOWN_API_KEY')});
+  const client = new ValTown({bearerToken: `${import.meta.env.VAL_TOWN_API_KEY}`});
   const zons = await client.me.vals.list({
     limit: 100,
     offset: 0,
